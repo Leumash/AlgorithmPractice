@@ -11,6 +11,7 @@ using namespace std;
 bool IsValid(const char * str);
 int main()
 {
+    // Valid Input
     cout << atoi("0") << endl;
     cout << atoi("-0") << endl;
     cout << atoi("-1") << endl;
@@ -19,8 +20,9 @@ int main()
     cout << atoi("-235") << endl;
     cout << atoi("2147483647") << endl;
     cout << atoi("-2147483648") << endl;
+
+    // Invalid Input
     cout << atoi("-2147483649") << endl;
-    cout << atoi("abc") << endl;
     cout << atoi("abc") << endl;
     cout << atoi(" 0") << endl;
 }
