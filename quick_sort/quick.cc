@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cstdlib>
+#include <time.h>
 
 using namespace std;
 
@@ -10,8 +11,11 @@ Time Complexity:
     Worst Case:
         O(n^2)
 Space Complexity:
-    S(n)
-    For my implementation, the space complexity is S(n), however S(logn) is possible
+    Average Case:
+        S(logn)
+    Worst Case:
+        S(n)
+    For my implementation, the worst case space complexity is S(n), however S(logn) is possible
 */
 
 void Quicksort(int* arr, int n);
@@ -32,19 +36,35 @@ int main()
     cout << endl;
 }
 
-void Quicksort(int* arr, int n)
-{
-    if (n > 0)
-    {
-        Quicksort(arr, 0, n);
-    }
-}
-
 void swap(int* arr, int left, int right)
 {
     int temp = arr[left];
     arr[left] = arr[right];
     arr[right] = temp;
+}
+
+void Randomize(int* arr, int n)
+{
+    // Fisher-Yates Shuffle
+
+    srand(time(NULL));
+
+    for (int i=0; i<n-2; ++i)
+    {
+        int j = rand() % (n-i);
+
+        swap(arr, i, i+j);
+    }
+}
+
+void Quicksort(int* arr, int n)
+{
+    if (n > 0)
+    {
+        Randomize(arr, n);
+
+        Quicksort(arr, 0, n);
+    }
 }
 
 void Quicksort(int* arr, int start, int end)
