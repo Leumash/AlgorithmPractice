@@ -1,4 +1,5 @@
 // Implement LRU cache
+// Runtime O(1)
 
 #include <iostream>
 #include <unordered_map>
