@@ -2,6 +2,8 @@
 #include <vector>
 #include <unordered_map>
 #include <unordered_set>
+#include <algorithm>
+#include <climits>
 
 using namespace std;
 
@@ -20,6 +22,13 @@ class Graph {
                 return vector<pair<int,int>>(adjacencyList[v].begin(), adjacencyList[v].end());
             }
             return vector<pair<int,int>>();
+        };
+        vector<int> getVertices() {
+            vector<int> vertices;
+            for (auto kv : adjacencyList) {
+                vertices.push_back(kv.first);
+            }
+            return vertices;
         };
     private:
         unordered_map<int, vector<pair<int,int>>> adjacencyList;
@@ -48,13 +57,63 @@ Graph makeGraph() {
     return graph;
 }
 
+int findCheapest(unordered_map<int,int> &vertexToCost) {
+    int vertex;
+    int cost = INT_MAX;
+    for (auto vToC : vertexToCost) {
+        if (vToC.second < cost) {
+            cost = vToC.second;
+            vertex = vToC.first;
+        }
+    }
+    return vertex;
+}
+
+void dijkstrasAlgorithm(Graph &graph, int s, unordered_map<int,int> &parents) {
+    unordered_map<int,int> cheapestCost;
+    unordered_map<int,int> currentCost;
+    vector<int> vertices = graph.getVertices();
+    unordered_set<int> visited;
+    for (int vertex : vertices) {
+        currentCost[vertex] = INT_MAX;
+    }
+    currentCost[s] = 0;
+    // Visit every vertex
+    while (visited.size() < vertices.size()) {
+        int current = findCheapest(currentCost);
+        cheapestCost[current] = currentCost[current];
+        currentCost.erase(current);
+        visited.insert(current);
+        for (pair<int,int> neighborAndWeight : graph.getNeighbors(current)) {
+            if (visited.find(neighborAndWeight.first) == visited.end()) {
+                if (currentCost[neighborAndWeight.first] > cheapestCost[current] + neighborAndWeight.second) {
+                    currentCost[neighborAndWeight.first] = cheapestCost[current] + neighborAndWeight.second;
+                    parents[neighborAndWeight.first] = current;
+                }
+            }
+        }
+    }
+}
+
+vector<int> getShortedPath(Graph &graph, int s, int t) {
+    unordered_map<int,int> parents;
+    dijkstrasAlgorithm(graph, s, parents);
+    vector<int> shortestPath;
+    shortestPath.push_back(t);
+    int i = t;
+    while (i != s) {
+        i = parents[i];
+        shortestPath.push_back(i);
+    }
+    reverse(shortestPath.begin(), shortestPath.end());
+    return shortestPath;
+}
+
 int main() {
     Graph graph = makeGraph();
-    /*
     for (int vertex : getShortedPath(graph, 1, 5)) {
         cout << vertex << ' ';
     }
-    */
     cout << endl;
 }
 
